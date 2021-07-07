@@ -3,5 +3,6 @@ file {
     path     => "/tmp/hello",
     ensure   => present,
     content  => "Hello World",
-    owner    => root:root;
+    owner    => root,
+    group    => root;
 }
