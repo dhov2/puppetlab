@@ -1,14 +1,14 @@
 package {
-  'install-apache2':
+  "install-apache2":
     ensure => 'present',
     name   => 'apache2';
-  'install-php7.3':
+  "install-php7.3":
     ensure => 'present',
     name   => 'php7.3';
 }
 
 file {
-  'download-dokuwiki':
+  "download-dokuwiki":
     ensure         => 'present',
     source         => 'https://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz',
     path           => '/usr/src/dokuwiki.tgz',
@@ -16,7 +16,7 @@ file {
 }
 
 exec {
-  'unzip-dokuwiki':
+  "unzip-dokuwiki":
     path    => ['/usr/bin/'],
     command => 'tar -xavf dokuwiki.tgz',
     creates => '/usr/src/dokuwiki-2020-07-29',
@@ -25,20 +25,20 @@ exec {
 }
 
 file {
-  'rename-dokuwiki':
+  "rename-dokuwiki":
     ensure  => 'present',
     source  => '/usr/src/dokuwiki-2020-07-29',
     path    => '/usr/src/dokuwiki',
     require => Exec['unzip-dokuwiki'];
 }
 
-$document_root = recettes.conf
-$server_name = www.recettes.com
+$document_root = 'recettes.conf'
+$server_name = 'www.recettes.com'
 
 file {
-  'create-dir-$document_root':
+  "create-dir-${document_root}":
     ensure  => 'present',
-    path    => '/var/www/$document_root/',
+    path    => '/var/www/${document_root}',
     source  => '/usr/src/dokuwiki',
     ignore  => '/var/www/',
     owner   => 'www-data',
@@ -48,25 +48,25 @@ file {
 }
 
 file {
-  'config-$document_root':
+  "config-${document_root}":
     ensure  => 'present',
-    content => template('/home/vagrant/puppetlab/site.conf)',
-    path    => '/etc/apache2/sites-available/$document_root',
+    content => template('/home/vagrant/puppetlab/template/site.conf.erb)',
+    path    => '/etc/apache2/sites-available/${document_root}',
     require => Package['install-apache2'];
 }
 
 exec {
-  'modify-conf-$document_root':
-    command => "template('/home/vagrant/puppetlab/site.conf')",
-    path    => '/etc/apache2/sites-available/$document_root';
+  "modify-conf-${document_root}":
+    command => "template('/home/vagrant/puppetlab/template/site.conf.erb')",
+    path    => '/etc/apache2/sites-available/${document_root}';
 }
 
 exec {
-  'enable-vhosts-$document_root':
+  "enable-vhosts-${document_root}":
     path    => ['/usr/bin'],
     cwd     => '/etc/apache2/sites-available/',
     command => 'a2ensite $document_root',
-    require => Exec['config-$document_root'],
+    require => Exec['config-${document_root}'],
     notify  => Service['reload-apache2'];
 }
 
@@ -74,10 +74,10 @@ service {
   'reload-apache2':
     ensure    => 'running',
     name      => 'apache2',
-    subscribe => Exec['enable-vhosts-$document_root];
+    subscribe => Exec['enable-vhosts-${document_root}'];
 }
 
 host {
-  '$server_name':
+  "${server_name}":
     ip => '127.0.0.1';
 }
