@@ -2,10 +2,16 @@ node 'control.lan' {
 
 }
 node 'server0.lan' {
-  $server_name = ["www.politique.wiki", "www.tajineworld.wiki"]
-  $document_root = ["politique.conf", "tajineworld.wiki"]
+  $server_name = "www.politique.wiki"
+  $document_root = "politique.conf"
   include hosting
 }
+node 'server0.lan' {
+  $server_name = "www.tajineworld.wiki"
+  $document_root = "tajineworld.conf"
+  include hosting
+}
+
 node 'server1.lan' {
   $server_name = "www.recettes.wiki"
   $document_root = "recettes.conf"
