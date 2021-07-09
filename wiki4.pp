@@ -72,7 +72,7 @@ class hosting {
       path    => ['/usr/bin'],
       cwd     => '/etc/apache2/sites-available/',
       command => "a2ensite ${document_root}",
-      require => Exec["config-${document_root}"],
+      require => File["config-${document_root}"],
       notify  => Service['reload-apache2'];
   }
 
