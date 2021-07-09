@@ -2,23 +2,27 @@ node 'control.lan' {
 
 }
 node 'server0.lan' {
-  $server_name = "www.politique.wiki"
-  $document_root = "politique.conf"
-  include hosting
-}
-node 'server0.lan' {
-  $server_name = "www.tajineworld.wiki"
-  $document_root = "tajineworld.conf"
-  include hosting
+  include dokuwiki::generic
+  dokuwiki::specific {
+    "site1":
+      $server_name = "www.politique.wiki"
+      $document_root = "politique.conf"
+    "site2":
+      $server_name = "www.tajineworld.wiki"
+      $document_root = "tajineworld.conf"
+  }
 }
 
 node 'server1.lan' {
-  $server_name = "www.recettes.wiki"
-  $document_root = "recettes.conf"
-  include hosting
+  include dokuwiki::generic
+  dokuwiki::specific {
+    "site1":
+      $server_name = "www.recettes.wiki"
+      $document_root = "recettes.conf"
+  }
 }
 
-class hosting {
+class dokuwiki::generic {
   package {
     "install-apache2":
       ensure => 'present',
@@ -52,7 +56,9 @@ class hosting {
       path    => '/usr/src/dokuwiki',
       require => Exec['unzip-dokuwiki'];
   }
+}
 
+define dokuwiki::specific ($document_root = "", $server_name = "") {
   file {
     "create-dir-${document_root}":
       ensure  => 'present',
