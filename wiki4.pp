@@ -2,8 +2,8 @@ node 'control.lan' {
 
 }
 node 'server0.lan' {
-  $server_name = "www.politique.wiki"
-  $document_root = "politique.conf"
+  $server_name = ["www.politique.wiki", "www.tajineworld.wiki"]
+  $document_root = ["politique.conf", "tajineworld.wiki"]
   include hosting
 }
 node 'server1.lan' {
@@ -69,7 +69,7 @@ class hosting {
 
   exec {
     "enable-vhosts-${document_root}":
-      path    => ['/usr/bin', '/usr/sbin', '/bin'],
+      path    => ['/usr/bin', '/usr/sbin', '/bins'],
       cwd     => '/etc/apache2/sites-available/',
       command => "a2ensite ${document_root}",
       require => File["config-${document_root}"],
