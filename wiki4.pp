@@ -5,11 +5,11 @@ node 'server0.lan' {
   include dokuwiki::generic
   dokuwiki::specific {
     "site1":
-      $server_name = "www.politique.wiki"
-      $document_root = "politique.conf"
+      server_name = "www.politique.wiki"
+      document_root = "politique.conf"
     "site2":
-      $server_name = "www.tajineworld.wiki"
-      $document_root = "tajineworld.conf"
+      server_name = "www.tajineworld.wiki"
+      document_root = "tajineworld.conf"
   }
 }
 
@@ -17,8 +17,8 @@ node 'server1.lan' {
   include dokuwiki::generic
   dokuwiki::specific {
     "site1":
-      $server_name = "www.recettes.wiki"
-      $document_root = "recettes.conf"
+      server_name = "www.recettes.wiki"
+      document_root = "recettes.conf"
   }
 }
 
