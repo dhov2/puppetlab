@@ -1,12 +1,12 @@
 node 'server0' {
+  $server_name = "www.politique.wiki"
+  $document_root = "politique.conf"
   include hosting
-  $server_name = www.politique.wiki
-  $document_root = politique.conf
 }
 node 'server1' {
+  $server_name = "www.recettes.wiki"
+  $document_root = "recettes.conf"
   include hosting
-  $server_name = www.recettes.wiki
-  $document_root = recettes.conf
 }
 
 class hosting {
@@ -47,7 +47,7 @@ class hosting {
   file {
     "create-dir-${document_root}":
       ensure  => 'present',
-      path    => '/var/www/${document_root}',
+      path    => "/var/www/${document_root}",
       source  => '/usr/src/dokuwiki',
       ignore  => '/var/www/',
       owner   => 'www-data',
@@ -60,22 +60,16 @@ class hosting {
     "config-${document_root}":
       ensure  => 'present',
       content => template('/home/vagrant/puppetlab/template/site.conf.erb)',
-      path    => '/etc/apache2/sites-available/${document_root}',
+      path    => "/etc/apache2/sites-available/${document_root}",
       require => Package['install-apache2'];
-  }
-
-  exec {
-    "modify-conf-${document_root}":
-      command => "template('/home/vagrant/puppetlab/template/site.conf.erb')",
-      path    => '/etc/apache2/sites-available/${document_root}';
   }
 
   exec {
     "enable-vhosts-${document_root}":
       path    => ['/usr/bin'],
       cwd     => '/etc/apache2/sites-available/',
-      command => 'a2ensite $document_root',
-      require => Exec['config-${document_root}'],
+      command => "a2ensite ${document_root}",
+      require => Exec["config-${document_root}"],
       notify  => Service['reload-apache2'];
   }
 
@@ -83,7 +77,7 @@ class hosting {
     'reload-apache2':
       ensure    => 'running',
       name      => 'apache2',
-      subscribe => Exec['enable-vhosts-${document_root}'];
+      subscribe => Exec["enable-vhosts-${document_root}"];
   }
 
   host {
