@@ -69,7 +69,7 @@ class hosting {
 
   exec {
     "enable-vhosts-${document_root}":
-      path    => ['/usr/bin'],
+      path    => ['/usr/bin', '/usr/sbin', '/bin'],
       cwd     => '/etc/apache2/sites-available/',
       command => "a2ensite ${document_root}",
       require => File["config-${document_root}"],
