@@ -5,10 +5,10 @@ node 'server0.lan' {
   include dokuwiki::generic
   dokuwiki::specific {
     "site1":
-      server_name   => "www.politique.wiki",
+      server_name   => "politique.wiki",
       document_root => "politique.conf";
     "site2":
-      server_name   => "www.tajineworld.wiki",
+      server_name   => "tajineworld.wiki",
       document_root => "tajineworld.conf";
   }
 }
@@ -17,7 +17,7 @@ node 'server1.lan' {
   include dokuwiki::generic
   dokuwiki::specific {
     "site1":
-      server_name   => "www.recettes.wiki",
+      server_name   => "recettes.wiki",
       document_root => "recettes.conf";
   }
 }
@@ -56,6 +56,12 @@ class dokuwiki::generic {
       path    => '/usr/src/dokuwiki',
       require => Exec['unzip-dokuwiki'];
   }
+
+  service {
+    'reload-apache2':
+      ensure    => 'running',
+      name      => 'apache2',
+  }  
 }
 
 define dokuwiki::specific ($document_root = "", $server_name = "") {
@@ -86,13 +92,6 @@ define dokuwiki::specific ($document_root = "", $server_name = "") {
       command => "a2ensite ${document_root}",
       require => File["config-${document_root}"],
       notify  => Service['reload-apache2'];
-  }
-
-  service {
-    'reload-apache2':
-      ensure    => 'running',
-      name      => 'apache2',
-      subscribe => Exec["enable-vhosts-${document_root}"];
   }
 
   host {
