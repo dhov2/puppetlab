@@ -1,9 +1,12 @@
-node 'server0' {
+node 'control.lan' {
+
+}
+node 'server0.lan' {
   $server_name = "www.politique.wiki"
   $document_root = "politique.conf"
   include hosting
 }
-node 'server1' {
+node 'server1.lan' {
   $server_name = "www.recettes.wiki"
   $document_root = "recettes.conf"
   include hosting
@@ -59,7 +62,7 @@ class hosting {
   file {
     "config-${document_root}":
       ensure  => 'present',
-      content => template('/home/vagrant/puppetlab/template/site.conf.erb)',
+      content => template('/home/vagrant/puppetlab/template/site.conf.erb'),
       path    => "/etc/apache2/sites-available/${document_root}",
       require => Package['install-apache2'];
   }
